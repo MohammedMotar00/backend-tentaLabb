@@ -1,17 +1,22 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import qs from 'query-string';
+import AddTodo from './AddTodo';
 
 class Trello extends Component {
   constructor(props) {
     super(props)
   
     this.state = {
-      card: '',
-      removeValueCard: '',
       username: "",
 
-      cardArr: [],
+      card: '',
+      removeValueCard: '',
+      myCards: [],
+
+      // todo: "",
+      // removeValueTodo: "",
+      // todos: []
     }
   }
 
@@ -31,12 +36,19 @@ class Trello extends Component {
         console.log(res.data);
         this.setState({ username: res.data });
       });
+
+      axios('/addcard')
+        .then(res => {
+          console.log(res.data);
+          this.setState({ myCards: res.data });
+        });
   }
 
   componentDidUpdate() {
     console.log(this.state.cardArr);
   }
 
+  // Adding card
   setCard = (e) => {
     this.setState({ card: e.target.value });
   };
@@ -63,8 +75,17 @@ class Trello extends Component {
       })
   };
 
+  // // Adding todos
+  // setTodo = (e) => {
+  //   this.setState({ todo: e.target.value });
+  // }
+
+  // addTodo = (name) => {
+  //   console.log(name);
+  // };
+
   render() {
-    const { card, username, cardArr } = this.state;
+    const { card, username, myCards, todo, todos } = this.state;
 
     return (
       <div>
@@ -79,15 +100,24 @@ class Trello extends Component {
               value={card}
               onChange={this.setCard.bind(this)}
             />
-            <button type="submit">Add card</button>
+            <button type="submit">Add list</button>
           </form>
         </div>
 
         <div>
-          {cardArr.map(card => {
+          {myCards.map(card => {
             return(
-              <div>
-                <h1>{card.card}</h1>
+              <div style={{ border: '1px solid red' }}>
+                <h2 key={card._id}>{card.card}</h2>
+                {/* <form onSubmit={e => e.preventDefault()}>
+                  <input 
+                    type="text"
+                    value={todo}
+                    onChange={this.setTodo.bind(this)}
+                  />
+                  <button type="submit" onClick={() => this.addTodo(card.card)}>Add card</button>
+                </form> */}
+                <AddTodo listName={card.card} />
               </div>
             );
           })}

@@ -42,7 +42,11 @@ app.post('/login', (req, res) => {
 
 // Add card stuff
 app.get('/addcard', (req, res) => {
-  
+  CardName.find({ username: userThatLoggedIn }, (err, data) => {
+    if (err) throw err;
+    console.log('sending cards to frontEnd...');
+    res.send(data);
+  })
 });
 
 app.post('/addcard', (req, res) => {
