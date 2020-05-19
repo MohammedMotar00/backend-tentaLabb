@@ -11,6 +11,7 @@ app.use(bodyParser.json());
 
 let userThatLoggedIn = "";
 let listName = "";
+let specificTodo = "";
 
 mongoose.connect('mongodb+srv://admin:admin@cluster0-6joz4.mongodb.net/trello?retryWrites=true&w=majority', err => {
   if (err) console.log("could'nt login to DB", err);
@@ -112,6 +113,28 @@ app.post('/addtodo', (req, res) => {
       if (err) console.log("Can't save todos to DB!!!");
       res.json(todo);
     });
+  }
+});
+
+// Hämtar specifik
+app.get('/addtodoinfo', (req, res) => {
+  Todo.find({ value: specificTodo }, (err, data) => {
+    if (err) throw err;
+    console.log('Sending todos to frontEnd...');
+    res.send(data);
+  });
+});
+
+app.post('/addtodoinfo', (req, res) => {
+  let value = req.body;
+
+  if (!value.value) {
+    res.status(400);
+    res.json({ error: "Can't get specific todo from frontend or no value!" });
+  }
+  else {
+    specificTodo = value.value;
+    res.json(value);
   }
 });
 

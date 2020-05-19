@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import axios from 'axios';
+import { Button, Modal } from 'react-bootstrap';
 
 class AddTodo extends Component {
   constructor(props) {
@@ -9,7 +10,12 @@ class AddTodo extends Component {
       todo: "",
       removeValueTodo: "",
       todosDB: [],
-      todos: []
+      todos: [],
+
+      description: "",
+      removeDescriptionValue: "",
+
+      showModal: false
     }
   }
 
@@ -17,7 +23,7 @@ class AddTodo extends Component {
     // Get todos from DB
     axios('/addtodo')
       .then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         this.setState({ todosDB: res.data });
       });
   };
@@ -41,21 +47,66 @@ class AddTodo extends Component {
 
     axios('/addtodo')
     .then(res => {
-      console.log(res.data);
+      // console.log(res.data);
     });
   };
 
+  // Modal stuff
+  handleModal = (value) => {
+    console.log(value);
+    this.setState({ showModal: !this.state.showModal });
+
+    axios
+      .post('/addtodoinfo', { value: value }, { headers: { "Content-Type": "application/json" } })
+    .then(res => {
+      console.log(res);
+    });
+
+    axios('/addtodoinfo')
+      .then(res => {
+        console.log(res.data[0].description);
+        this.setState({ description: res.data[0].description })
+      });
+  };
+
+  setDescription = (e) => {
+    this.setState({ description: e.target.value });
+  } ;
+
+  saveChanges = (e) => {
+    e.preventDefault();
+    this.setState({ showModal: false });
+    this.setState({ removeDescriptionValue: this.state.description, description: "" });
+  };
+
   render() {
-    const { todo, todosDB, todos } = this.state;
+    const { todo, todosDB, todos, showModal, description } = this.state;
 
     return (
       <div style={{ border: '1px solid green' }}>
         {todosDB.map(todo => {
-          console.log(todo);
+          // console.log(todo);
           return(
             <div>
-              <span><strong>{todo.value}:</strong> </span>
-              <span>{todo.time}</span>
+              {/* <span><strong>{todo.value}:</strong> </span>
+              <span>{todo.time}</span> */}
+              <button onClick={() => this.handleModal(todo.value)}>{todo.value}</button>
+              <Modal show={showModal} onHide={this.handleModal}>
+                <Modal.Header closeButton></Modal.Header>
+                <Modal.Body>
+                  <h3>Description: </h3>
+                  <form onSubmit={this.saveChanges}>
+                    <input 
+                      type="text"
+                      value={description}
+                      onChange={this.setDescription.bind(this)}
+                    />
+                  </form>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button onClick={this.saveChanges}>Save</Button>
+                </Modal.Footer>
+              </Modal>
             </div>
           );
         })}
