@@ -3,12 +3,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const keys = require('generate-key');
+const moment = require('moment');
 
 const app = express();
 
 app.use(bodyParser.json());
 
 let userThatLoggedIn = "";
+let listName = "";
 
 mongoose.connect('mongodb+srv://admin:admin@cluster0-6joz4.mongodb.net/trello?retryWrites=true&w=majority', err => {
   if (err) console.log("could'nt login to DB", err);
@@ -21,7 +23,16 @@ let cardNameSchema = mongoose.Schema({
   card: String
 });
 
+let todoSchema = mongoose.Schema({
+  _id: String,
+  value: String,
+  list: String,
+  description: String,
+  time: String
+});
+
 let CardName = mongoose.model('cardName', cardNameSchema);
+let Todo = mongoose.model('todo', todoSchema);
 
 // Login stuff
 app.get('/login', (req, res) => {
@@ -69,6 +80,39 @@ app.post('/addcard', (req, res) => {
       res.json(card);
     });
   };
+});
+
+app.get('/addtodo', (req, res) => {
+  Todo.find({ list: listName }, (err, data) => {
+    if (err) throw err;
+    console.log('Sending todos to frontEnd...');
+    res.send(data);
+  });
+});
+
+app.post('/addtodo', (req, res) => {
+  let todo = req.body;
+  if (!todo.data) {
+    res.status(400);
+    res.json({ error: "Can't get todos from frontend or no value!" });
+  }
+  else {
+    listName = todo.list;
+    console.log(listName)
+
+    let myTodo = new Todo({
+      _id: keys.generateKey(),
+      value: todo.data,
+      list: todo.list,
+      description: "",
+      time: moment().format('LLLL')
+    });
+
+    myTodo.save(err => {
+      if (err) console.log("Can't save todos to DB!!!");
+      res.json(todo);
+    });
+  }
 });
 
 
