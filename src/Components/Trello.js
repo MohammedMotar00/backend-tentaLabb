@@ -31,7 +31,7 @@ class Trello extends Component {
         console.log(res);
       });
 
-    axios('login')
+    axios('/login')
       .then(res => {
         console.log(res.data);
         this.setState({ username: res.data });

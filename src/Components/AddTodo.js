@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import { Button, Modal } from 'react-bootstrap';
+import moment from 'moment';
 
 class AddTodo extends Component {
   constructor(props) {
@@ -12,7 +13,14 @@ class AddTodo extends Component {
       todosDB: [],
       todos: [],
 
+      listValue: "",
+      todoValue: "",
       description: "",
+      lastChanged: "",
+      cardID: "",
+
+      removeListValue: "",
+      removeTodoValue: "",
       removeDescriptionValue: "",
 
       showModal: false
@@ -64,23 +72,49 @@ class AddTodo extends Component {
 
     axios('/addtodoinfo')
       .then(res => {
-        console.log(res.data[0].description);
-        this.setState({ description: res.data[0].description })
+        console.log(res.data[0]);
+        this.setState({ description: res.data[0].description });
+        this.setState({ listValue: res.data[0].list });
+        this.setState({ todoValue: res.data[0].value });
+        this.setState({ lastChanged: res.data[0].time });
+        this.setState({ cardID: res.data[0]._id });
       });
   };
 
   setDescription = (e) => {
     this.setState({ description: e.target.value });
-  } ;
+  };
+
+  setListValue = (e) => {
+    this.setState({ listValue: e.target.value });
+  };
+
+  setTodoValue = (e) => {
+    this.setState({ todoValue: e.target.value });
+  };
 
   saveChanges = (e) => {
     e.preventDefault();
     this.setState({ showModal: false });
     this.setState({ removeDescriptionValue: this.state.description, description: "" });
+
+    axios
+      .put(`/addtodoinfo/${this.state.cardID}`,
+      {
+        _id: this.state.cardID,
+        description: this.state.description,
+        list: this.state.listValue,
+        time: moment().format('LLLL'),
+        value: this.state.todoValue,
+      },
+      {headers: {"Content-Type": "application/json"}})
+      .then(res => {
+        console.log(res);
+      });
   };
 
   render() {
-    const { todo, todosDB, todos, showModal, description } = this.state;
+    const { todo, todosDB, todos, showModal, description, listValue, todoValue, lastChanged } = this.state;
 
     return (
       <div style={{ border: '1px solid green' }}>
@@ -94,13 +128,40 @@ class AddTodo extends Component {
               <Modal show={showModal} onHide={this.handleModal}>
                 <Modal.Header closeButton></Modal.Header>
                 <Modal.Body>
-                  <h3>Description: </h3>
                   <form onSubmit={this.saveChanges}>
-                    <input 
-                      type="text"
-                      value={description}
-                      onChange={this.setDescription.bind(this)}
-                    />
+                    <label>
+                      Card name:
+                      <input 
+                        type="text"
+                        value={listValue}
+                        onChange={this.setListValue.bind(this)}
+                      />
+                    </label>
+
+                    <label>
+                      Description:
+                      <input 
+                        type="text"
+                        value={description}
+                        onChange={this.setDescription.bind(this)}
+                      />
+                    </label>
+
+                    <label>
+                      Change todo:
+                      <input 
+                        type="text"
+                        value={todoValue}
+                        onChange={this.setTodoValue.bind(this)}
+                      />
+                    </label>
+                    <br/>
+                    <p>Last changed: {lastChanged}</p>
+                    <br/>
+                    <p>Flytta todo till:</p>
+                    <button>Kort1</button>
+                    <button>Kort2</button>
+                    <button>Kort3</button>
                   </form>
                 </Modal.Body>
                 <Modal.Footer>

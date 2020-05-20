@@ -138,6 +138,51 @@ app.post('/addtodoinfo', (req, res) => {
   }
 });
 
+app.get('/addtodoinfo/:id', (req, res) => {
+  let id = req.params.id;
+  Todo.find({ _id: id }, (err, data) => {
+    if (err) throw err;
+    console.log('Sending specific id todos to frontEnd...');
+    res.send(data);
+  });
+});
+
+app.put('/addtodoinfo/:id', (req, res) => {
+  let id = req.params.id;
+  let data = req.body;
+  console.log('detta är idet!: ', id);
+  // console.log('detta är data edit:', data.description)
+
+  if (!id) {
+    res.status(400);
+    res.json({ error: "Can't edit card!" });
+    res.end();
+    return;
+  }
+
+  if (!data) {
+    res.status(400);
+    res.json({ error: "Can't get the edited info!" });
+    res.end();
+    return;
+  }
+  else {
+    res.send(data);
+    console.log('detta är data edit:', data.description)
+    Todo.findByIdAndUpdate(data._id,
+      {
+        _id: data._id,
+        value: data.value,
+        list: data.list,
+        description: data.description,
+        time: data.time
+      }, err => {
+        if (err) console.log('cant update values', err);
+        console.log('updated values successfully');
+      });
+  }
+});
+
 
 const PORT = 8000 || process.env.PORT;
 app.listen(PORT, () => {
