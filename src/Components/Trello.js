@@ -156,6 +156,13 @@ class Trello extends Component {
       {headers: {"Content-Type": "application/json"}})
       .then(res => {
         console.log(res);
+        // get all todos for specific cards!
+        console.log(this.state.myCards)
+        axios('/gettodos')
+          .then(res => {
+            console.log(res);
+            this.setState({ getTodosDB: res.data });
+          })
       });
   }
 
@@ -176,6 +183,13 @@ class Trello extends Component {
       {headers: {"Content-Type": "application/json"}})
       .then(res => {
         console.log(res);
+        // get all todos for specific cards!
+        console.log(this.state.myCards)
+        axios('/gettodos')
+          .then(res => {
+            console.log(res);
+            this.setState({ getTodosDB: res.data });
+          })
       });
   };
 
