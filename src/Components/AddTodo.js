@@ -52,6 +52,7 @@ class AddTodo extends Component {
       .post('/addtodo', { data: this.state.todo, list: listName, username: username }, {headers: { "Content-Type": "application/json" }})
     .then(res => {
       console.log('sending todo to backend!', res);
+      this.props.getAddingTodos();
     });
 
     axios('/addtodo')

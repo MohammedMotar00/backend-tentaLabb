@@ -52,6 +52,7 @@ class Trello extends Component {
         this.setState({ username: res.data });
       });
 
+    // Hämtar korten
     axios('/addcard')
       .then(res => {
         console.log(res.data);
@@ -98,6 +99,15 @@ class Trello extends Component {
         })
       .then(res => {
         console.log(res);
+        // Hämtar korten
+        axios('/addcard')
+        .then(res => {
+          console.log(res.data);
+          res.data.map(card => {
+            console.log(card.card)
+          })
+          this.setState({ myCards: res.data });
+        });
       })
   };
 
@@ -164,6 +174,16 @@ class Trello extends Component {
             this.setState({ getTodosDB: res.data });
           })
       });
+  }
+
+  getAddingTodos = () => {
+    // get all todos for specific cards!
+    console.log(this.state.myCards)
+    axios('/gettodos')
+      .then(res => {
+        console.log(res);
+        this.setState({ getTodosDB: res.data });
+      })
   }
 
   saveChanges = (e) => {
@@ -298,7 +318,7 @@ class Trello extends Component {
                   <button type="submit" onClick={() => this.addTodo(card.card)}>Add card</button>
                 </form> */}
                 {/* Kanske använder ej propsen username! */}
-                <AddTodo listName={card.card} username={username} />
+                <AddTodo listName={card.card} username={username} getAddingTodos={this.getAddingTodos} />
               </div>
             );
           })}
