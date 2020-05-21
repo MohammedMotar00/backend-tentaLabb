@@ -170,7 +170,7 @@ app.put('/addtodoinfo/:id', (req, res) => {
   }
   else {
     res.send(data);
-    console.log('detta är data edit:', data.list)
+    console.log('detta är data list!!!!!!!!!:', data.list)
     Todo.findByIdAndUpdate(data._id,
       {
         _id: data._id,

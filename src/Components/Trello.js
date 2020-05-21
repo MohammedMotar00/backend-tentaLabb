@@ -138,6 +138,7 @@ class Trello extends Component {
   moveTodos = (todo) => {
     console.log('myTodos: ', todo);
     console.log('myTodos id: ', this.state.cardID);
+    this.setState({ showModal: false });
     // axios
     //   .put('/addtodoinfo', { value: todo }, { headers: { "Content-Type": "application/json" } })
     // .then(res => {
@@ -228,7 +229,7 @@ class Trello extends Component {
                         <Modal show={showModal} onHide={this.handleModal}>
                           <Modal.Header closeButton></Modal.Header>
                           <Modal.Body>
-                            <form onSubmit={(e) => this.saveChanges(e)}>
+                            <form onSubmit={this.saveChanges}>
                               <label>
                                 Card name:
                                 <input 
@@ -261,14 +262,13 @@ class Trello extends Component {
                               <p>Flytta todo till:</p>
                               {myCards.map(cards => {
                                 return (
-                                  <p onClick={() => this.moveTodos(cards.card)}>{cards.card}</p>
+                                  <p style={{ border: '3px solid blue' }} onClick={() => this.moveTodos(cards.card)}>{cards.card}</p>
                                 )
                               })}
                             </form>
                           </Modal.Body>
                           <Modal.Footer>
-                            {/* // OBS!!!!!!! skicka namn på cards.card till saveChanges function! */}
-                            <Button onClick={(e) => this.saveChanges(e)}>Save</Button>
+                            <Button onClick={this.saveChanges}>Save</Button>
                           </Modal.Footer>
                         </Modal>
                       </div>
