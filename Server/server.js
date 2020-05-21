@@ -29,6 +29,7 @@ let todoSchema = mongoose.Schema({
   value: String,
   list: String,
   description: String,
+  username: String,
   time: String
 });
 
@@ -106,6 +107,7 @@ app.post('/addtodo', (req, res) => {
       value: todo.data,
       list: todo.list,
       description: "",
+      username: userThatLoggedIn,
       time: moment().format('LLLL')
     });
 
@@ -168,7 +170,7 @@ app.put('/addtodoinfo/:id', (req, res) => {
   }
   else {
     res.send(data);
-    console.log('detta är data edit:', data.description)
+    console.log('detta är data edit:', data.list)
     Todo.findByIdAndUpdate(data._id,
       {
         _id: data._id,
@@ -181,6 +183,14 @@ app.put('/addtodoinfo/:id', (req, res) => {
         console.log('updated values successfully');
       });
   }
+});
+
+app.get('/gettodos', (req, res) => {
+  Todo.find({ username: userThatLoggedIn }, (err, data) => {
+    if (err) throw err;
+    console.log('sending todos to frontEnd like comDidMount');
+    res.send(data);
+  });
 });
 
 

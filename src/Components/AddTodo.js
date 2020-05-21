@@ -32,7 +32,7 @@ class AddTodo extends Component {
     axios('/addtodo')
       .then(res => {
         // console.log(res.data);
-        this.setState({ todosDB: res.data });
+        // this.setState({ todosDB: res.data });
       });
   };
 
@@ -46,9 +46,10 @@ class AddTodo extends Component {
     this.setState({ removeValueTodo: this.state.todo, todo: '' });
 
     let listName = this.props.listName;
+    let username = this.props.username;
 
     axios
-      .post('/addtodo', { data: this.state.todo, list: listName }, {headers: { "Content-Type": "application/json" }})
+      .post('/addtodo', { data: this.state.todo, list: listName, username: username }, {headers: { "Content-Type": "application/json" }})
     .then(res => {
       console.log('sending todo to backend!', res);
     });
