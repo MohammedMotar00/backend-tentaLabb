@@ -193,6 +193,39 @@ app.get('/gettodos', (req, res) => {
   });
 });
 
+app.delete('/deletetodos/:id', (req, res) => {
+  let id = req.params.id;
+  console.log('this is todo id: ', id);
+  if (id) {
+    Todo.findByIdAndDelete(id, err => {
+      if (err) console.log('can not delete todo from DB...');
+      console.log('Todo deleted successfully');
+      res.status(204);
+      res.end();
+    });
+  }
+});
+
+app.delete('/deletecards/:id', (req, res) => {
+  let cardName = req.params.id;
+
+  if (cardName) {
+    CardName.deleteMany({ card: cardName }, err => {
+      if (err) console.log('could not delete card from DB: ', err);
+      console.log('Card Deleted successfully');
+      res.status(204);
+      res.end();
+    });
+
+    Todo.deleteMany({ list: cardName }, err => {
+      if (err) console.log('could not delete all todos from cardname from DB...');
+      console.log(`All Todos inside card: ${cardName} where successfully deleted`);
+      res.status(204);
+      res.end();
+    });
+  }
+});
+
 
 const PORT = 8000 || process.env.PORT;
 app.listen(PORT, () => {

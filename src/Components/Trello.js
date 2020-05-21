@@ -213,6 +213,41 @@ class Trello extends Component {
       });
   };
 
+  deleteTodo = (id) => {
+    console.log('idet: ', id);
+
+    axios
+      .delete(`/deletetodos/${id}`)
+    .then(res => {
+      console.log('delete todos: ', res);
+      // get all todos for specific cards!
+      axios('/gettodos')
+        .then(res => {
+          console.log(res);
+          this.setState({ getTodosDB: res.data });
+        })
+    });
+  };
+
+  deleteCards = (cardName) => {
+    console.log('cardName: ', cardName);
+
+    axios
+      .delete(`deletecards/${cardName}`)
+    .then(res => {
+      console.log('delete cards: ', res);
+      // Hämtar korten
+      axios('/addcard')
+      .then(res => {
+        console.log(res.data);
+        res.data.map(card => {
+          console.log(card.card)
+        })
+        this.setState({ myCards: res.data });
+      });
+    });
+  };
+
   // // Adding todos
   // setTodo = (e) => {
   //   this.setState({ todo: e.target.value });
@@ -253,13 +288,16 @@ class Trello extends Component {
             return(
               <div style={{ border: '1px solid red' }}>
                 <h2 key={card._id}>{card.card}</h2>
+                <button onClick={() => this.deleteCards(card.card)}>delete card</button>
                 {getTodosDB.map(todo => {
                   console.log(todo)
                   if (card.card === todo.list) {
+                    console.log('king',todo);
                     // console.log(todo.value)
                     return (
                       <div>
                         <button onClick={() => this.handleModal(todo.value)}>{todo.value}</button>
+                        <button onClick={() => this.deleteTodo(todo._id)}>delete todo</button>
                         <Modal show={showModal} onHide={this.handleModal}>
                           <Modal.Header closeButton></Modal.Header>
                           <Modal.Body>
