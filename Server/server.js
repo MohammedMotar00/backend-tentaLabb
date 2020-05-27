@@ -37,11 +37,11 @@ let CardName = mongoose.model('cardName', cardNameSchema);
 let Todo = mongoose.model('todo', todoSchema);
 
 // Login stuff
-app.get('/login', (req, res) => {
+app.get('/login', (req, res) => { // check
   res.send(userThatLoggedIn);
 });
 
-app.post('/login', (req, res) => {
+app.post('/login', (req, res) => {  // check
   let username = req.body
   if (!username) {
     res.status(400);
@@ -54,7 +54,7 @@ app.post('/login', (req, res) => {
 });
 
 // Add card stuff
-app.get('/addcard', (req, res) => {
+app.get('/addcard', (req, res) => { // check
   CardName.find({ username: userThatLoggedIn }, (err, data) => {
     if (err) throw err;
     console.log('sending cards to frontEnd...');
@@ -62,7 +62,7 @@ app.get('/addcard', (req, res) => {
   })
 });
 
-app.post('/addcard', (req, res) => {
+app.post('/addcard', (req, res) => {  // check
   let card = req.body;
   console.log(card)
   if (!card.card) {
@@ -84,15 +84,7 @@ app.post('/addcard', (req, res) => {
   };
 });
 
-app.get('/addtodo', (req, res) => {
-  Todo.find({ list: listName }, (err, data) => {
-    if (err) throw err;
-    console.log('Sending todos to frontEnd...');
-    res.send(data);
-  });
-});
-
-app.post('/addtodo', (req, res) => {
+app.post('/addtodo', (req, res) => {  // check
   let todo = req.body;
   if (!todo.data) {
     res.status(400);
@@ -119,7 +111,7 @@ app.post('/addtodo', (req, res) => {
 });
 
 // Hämtar specifik
-app.get('/addtodoinfo', (req, res) => {
+app.get('/addtodoinfo', (req, res) => { // check
   Todo.find({ value: specificTodo }, (err, data) => {
     if (err) throw err;
     console.log('Sending todos to frontEnd...');
@@ -127,7 +119,7 @@ app.get('/addtodoinfo', (req, res) => {
   });
 });
 
-app.post('/addtodoinfo', (req, res) => {
+app.post('/addtodoinfo', (req, res) => {  // check
   let value = req.body;
 
   if (!value.value) {
@@ -140,16 +132,7 @@ app.post('/addtodoinfo', (req, res) => {
   }
 });
 
-app.get('/addtodoinfo/:id', (req, res) => {
-  let id = req.params.id;
-  Todo.find({ _id: id }, (err, data) => {
-    if (err) throw err;
-    console.log('Sending specific id todos to frontEnd...');
-    res.send(data);
-  });
-});
-
-app.put('/addtodoinfo/:id', (req, res) => {
+app.put('/addtodoinfo/:id', (req, res) => { // check
   let id = req.params.id;
   let data = req.body;
   console.log('detta är idet!: ', id);
@@ -185,7 +168,7 @@ app.put('/addtodoinfo/:id', (req, res) => {
   }
 });
 
-app.get('/gettodos', (req, res) => {
+app.get('/gettodos', (req, res) => {  // check
   Todo.find({ username: userThatLoggedIn }, (err, data) => {
     if (err) throw err;
     console.log('sending todos to frontEnd like comDidMount');

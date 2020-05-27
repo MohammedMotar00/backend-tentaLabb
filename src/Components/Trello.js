@@ -4,34 +4,29 @@ import qs from 'query-string';
 import AddTodo from './AddTodo';
 import { Button, Modal } from 'react-bootstrap';
 import moment from 'moment';
+import { Redirect } from 'react-router-dom';
 
 class Trello extends Component {
   constructor(props) {
     super(props)
   
     this.state = {
-      username: "",
+      username: "", // check
 
-      card: '',
-      removeValueCard: '',
-      myCards: [],
+      card: '', // check
+      removeValueCard: '',  // check
+      myCards: [],  // check
 
-      getTodosDB: [],
-      showModal: false,
+      getTodosDB: [], // check
+      showModal: false, // check
 
-      listValue: "",
-      todoValue: "",
-      description: "",
-      lastChanged: "",
-      cardID: "",
+      listValue: "",  // check
+      todoValue: "",  // check
+      description: "",  // check
+      lastChanged: "",  // check
+      cardID: "", // check
 
-      removeListValue: "",
-      removeTodoValue: "",
-      removeDescriptionValue: ""
-
-      // todo: "",
-      // removeValueTodo: "",
-      // todos: []
+      logOut: false
     }
   }
 
@@ -48,31 +43,20 @@ class Trello extends Component {
 
     axios('/login')
       .then(res => {
-        console.log(res.data);
         this.setState({ username: res.data });
       });
 
     // Hämtar korten
     axios('/addcard')
       .then(res => {
-        console.log(res.data);
-        res.data.map(card => {
-          console.log(card.card)
-        })
         this.setState({ myCards: res.data });
       });
 
     // get all todos for specific cards!
-    console.log(this.state.myCards)
     axios('/gettodos')
       .then(res => {
-        console.log(res);
         this.setState({ getTodosDB: res.data });
       })
-  }
-
-  componentDidUpdate() {
-    console.log(this.state.getTodosDB);
   }
 
   // Adding card
@@ -102,10 +86,6 @@ class Trello extends Component {
         // Hämtar korten
         axios('/addcard')
         .then(res => {
-          console.log(res.data);
-          res.data.map(card => {
-            console.log(card.card)
-          })
           this.setState({ myCards: res.data });
         });
       })
@@ -125,7 +105,6 @@ class Trello extends Component {
 
   // Modal stuff
   handleModal = (value) => {
-    console.log(value);
     this.setState({ showModal: !this.state.showModal });
 
     axios
@@ -146,14 +125,8 @@ class Trello extends Component {
   };
 
   moveTodos = (todo) => {
-    console.log('myTodos: ', todo);
-    console.log('myTodos id: ', this.state.cardID);
     this.setState({ showModal: false });
-    // axios
-    //   .put('/addtodoinfo', { value: todo }, { headers: { "Content-Type": "application/json" } })
-    // .then(res => {
-    //   console.log(res);
-    // });
+
     axios
       .put(`/addtodoinfo/${this.state.cardID}`,
       {
@@ -165,12 +138,9 @@ class Trello extends Component {
       },
       {headers: {"Content-Type": "application/json"}})
       .then(res => {
-        console.log(res);
         // get all todos for specific cards!
-        console.log(this.state.myCards)
         axios('/gettodos')
           .then(res => {
-            console.log(res);
             this.setState({ getTodosDB: res.data });
           })
       });
@@ -178,10 +148,8 @@ class Trello extends Component {
 
   getAddingTodos = () => {
     // get all todos for specific cards!
-    console.log(this.state.myCards)
     axios('/gettodos')
       .then(res => {
-        console.log(res);
         this.setState({ getTodosDB: res.data });
       })
   }
@@ -202,67 +170,54 @@ class Trello extends Component {
       },
       {headers: {"Content-Type": "application/json"}})
       .then(res => {
-        console.log(res);
         // get all todos for specific cards!
-        console.log(this.state.myCards)
         axios('/gettodos')
           .then(res => {
-            console.log(res);
             this.setState({ getTodosDB: res.data });
           })
       });
   };
 
   deleteTodo = (id) => {
-    console.log('idet: ', id);
-
     axios
       .delete(`/deletetodos/${id}`)
     .then(res => {
-      console.log('delete todos: ', res);
       // get all todos for specific cards!
       axios('/gettodos')
         .then(res => {
-          console.log(res);
           this.setState({ getTodosDB: res.data });
         })
     });
   };
 
   deleteCards = (cardName) => {
-    console.log('cardName: ', cardName);
-
     axios
       .delete(`deletecards/${cardName}`)
     .then(res => {
-      console.log('delete cards: ', res);
       // Hämtar korten
       axios('/addcard')
       .then(res => {
-        console.log(res.data);
-        res.data.map(card => {
-          console.log(card.card)
-        })
         this.setState({ myCards: res.data });
       });
     });
   };
 
-  // // Adding todos
-  // setTodo = (e) => {
-  //   this.setState({ todo: e.target.value });
-  // }
+  logOut = () => {
+    this.setState({ logOut: true });
+    this.setState({ username: "" })
+    this.setState({ card: "" })
 
-  // addTodo = (name) => {
-  //   console.log(name);
-  // };
+    this.setState({ listValue: "" })
+    this.setState({ todoValue: "" })
+    this.setState({ description: "" })
+    this.setState({ lastChanged: "" })
+    this.setState({ cardID: "" })
+  };
 
   render() {
-    const { card, username, myCards, todo, todos, getTodosDB, showModal, listValue, todoValue, description, lastChanged } = this.state;
+    const { card, username, myCards, getTodosDB, showModal, listValue, todoValue, description, lastChanged, logOut } = this.state;
 
-    // let allCards = myCards.map(card => {
-    //   return <p>{card.card}</p>
-    // })
+    if (logOut) return <Redirect to="/" />
 
     return (
       <div>
@@ -279,21 +234,19 @@ class Trello extends Component {
             />
             <button type="submit">Add list</button>
           </form>
+          <div>
+            <button onClick={this.logOut}>log out</button>
+          </div>
         </div>
 
         <div>
           {myCards.map(card => {
-            // let allCards = card.card;
-
             return(
               <div style={{ border: '1px solid red' }}>
                 <h2 key={card._id}>{card.card}</h2>
                 <button onClick={() => this.deleteCards(card.card)}>delete card</button>
                 {getTodosDB.map(todo => {
-                  console.log(todo)
                   if (card.card === todo.list) {
-                    console.log('king',todo);
-                    // console.log(todo.value)
                     return (
                       <div>
                         <button onClick={() => this.handleModal(todo.value)}>{todo.value}</button>
@@ -347,15 +300,6 @@ class Trello extends Component {
                     );
                   }
                 })}
-                {/* <form onSubmit={e => e.preventDefault()}>
-                  <input 
-                    type="text"
-                    value={todo}
-                    onChange={this.setTodo.bind(this)}
-                  />
-                  <button type="submit" onClick={() => this.addTodo(card.card)}>Add card</button>
-                </form> */}
-                {/* Kanske använder ej propsen username! */}
                 <AddTodo listName={card.card} username={username} getAddingTodos={this.getAddingTodos} />
               </div>
             );
