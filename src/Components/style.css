@@ -1,0 +1,85 @@
+.username {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+}
+
+.add-list__container {
+  position: relative;
+  padding: 10px;
+}
+
+.logout {
+  position: absolute;
+  top: 1px;
+  right: 1.5rem;
+}
+
+
+.card__container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.card-items__container {
+  border-radius: 15px;
+  background-color: rgba(137, 43, 226, 0.199);
+  margin: 20px;
+  width: 300px;
+  position: relative;
+}
+
+.card-info__container {
+  position: relative;
+}
+
+.delete__card {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  border-radius: 6px;
+}
+
+.todo-item__container {
+  padding: 10px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.delete__todo {
+  position: absolute;
+  right: 1rem;
+}
+
+.todo__container {
+  margin-bottom: 50px;
+}
+
+.add__todo {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.move__todo {
+  position: relative;
+}
+
+.move__todo__item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.move-todo-name {
+  margin: 20px 20px 0px 0px;
+  padding: 5px;
+  font-size: 20px;
+  color: green;
+  transition: font-size .3s ease-in-out;
+  cursor: pointer;
+}
+
+.move-todo-name:hover {
+  font-size: 22px;
+}

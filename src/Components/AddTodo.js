@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 
+import './style.css';
+
 class AddTodo extends Component {
   constructor(props) {
     super(props)
@@ -35,7 +37,7 @@ class AddTodo extends Component {
     const { todo } = this.state;
 
     return (
-      <div style={{ border: '1px solid green' }}>
+      <div className="add__todo">
         <div>
           <form onSubmit={this.addTodo.bind(this)}>
             <input 
@@ -43,7 +45,7 @@ class AddTodo extends Component {
               value={todo}
               onChange={this.setTodo.bind(this)}
             />
-            <button type="submit">Add card</button>
+            <button className="add-todo__btn" type="submit">Add card</button>
           </form>
         </div>
       </div>

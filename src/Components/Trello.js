@@ -6,25 +6,26 @@ import { Button, Modal } from 'react-bootstrap';
 import moment from 'moment';
 import { Redirect } from 'react-router-dom';
 
+import './style.css';
+
 class Trello extends Component {
   constructor(props) {
     super(props)
   
     this.state = {
-      username: "", // check
+      username: "",
 
-      card: '', // check
-      removeValueCard: '',  // check
-      myCards: [],  // check
+      card: '',
+      removeValueCard: '', 
+      myCards: [], 
+      getTodosDB: [],
+      showModal: false,
 
-      getTodosDB: [], // check
-      showModal: false, // check
-
-      listValue: "",  // check
-      todoValue: "",  // check
-      description: "",  // check
-      lastChanged: "",  // check
-      cardID: "", // check
+      listValue: "", 
+      todoValue: "", 
+      description: "", 
+      lastChanged: "", 
+      cardID: "",
 
       logOut: false
     }
@@ -93,10 +94,6 @@ class Trello extends Component {
 
   setDescription = (e) => {
     this.setState({ description: e.target.value });
-  };
-
-  setListValue = (e) => {
-    this.setState({ listValue: e.target.value });
   };
 
   setTodoValue = (e) => {
@@ -222,10 +219,10 @@ class Trello extends Component {
     return (
       <div>
         <div>
-          <h1>Welcome to Motar Trello!</h1>
-          <h3>Username: {username}</h3>
+          <h3>Welcome to Motar Trello!</h3>
+          <h3 className="username">Username: {username}</h3>
         </div>
-        <div>
+        <div className="add-list__container">
           <form onSubmit={this.addCard.bind(this)}>
             <input 
               type="text"
@@ -235,34 +232,32 @@ class Trello extends Component {
             <button type="submit">Add list</button>
           </form>
           <div>
-            <button onClick={this.logOut}>log out</button>
+            <button className="logout" onClick={this.logOut}>log out</button>
           </div>
         </div>
 
-        <div>
+        <div className="card__container">
           {myCards.map(card => {
             return(
-              <div style={{ border: '1px solid red' }}>
-                <h2 key={card._id}>{card.card}</h2>
-                <button onClick={() => this.deleteCards(card.card)}>delete card</button>
+              <div className="card-items__container">
+                <div className="card-info__container">
+                  <h2 key={card._id}>{card.card}</h2>
+                  <button className="delete__card" onClick={() => this.deleteCards(card.card)}>X</button>
+                </div>
+                <div className="todo__container">
                 {getTodosDB.map(todo => {
                   if (card.card === todo.list) {
                     return (
                       <div>
-                        <button onClick={() => this.handleModal(todo.value)}>{todo.value}</button>
-                        <button onClick={() => this.deleteTodo(todo._id)}>delete todo</button>
+                        <div className="todo-item__container">
+                          <button onClick={() => this.handleModal(todo.value)}>{todo.value}</button>
+                          <button className="delete__todo" onClick={() => this.deleteTodo(todo._id)}>X</button>
+                        </div>
                         <Modal show={showModal} onHide={this.handleModal}>
-                          <Modal.Header closeButton></Modal.Header>
+                          <Modal.Header closeButton><h3>List name: <strong> {listValue}</strong></h3> </Modal.Header>
                           <Modal.Body>
                             <form onSubmit={this.saveChanges}>
-                              <label>
-                                Card name:
-                                <input 
-                                  type="text"
-                                  value={listValue}
-                                  onChange={this.setListValue.bind(this)}
-                                />
-                              </label>
+                              {/* <p>Card name: <strong>{listValue}</strong></p> */}
 
                               <label>
                                 Description:
@@ -284,12 +279,18 @@ class Trello extends Component {
                               <br/>
                               <p>Last changed: {lastChanged}</p>
                               <br/>
-                              <p>Flytta todo till:</p>
-                              {myCards.map(cards => {
-                                return (
-                                  <p style={{ border: '3px solid blue' }} onClick={() => this.moveTodos(cards.card)}>{cards.card}</p>
-                                )
-                              })}
+                              <div className="move__todo">
+                                <p style= {{ position: 'absolute', right: "2rem" }}>Move card to:</p>
+                                <div className="move__todo__item">
+                                  {myCards.map(cards => {
+                                    return (
+                                      <div className="move-todo-name">
+                                        <p onClick={() => this.moveTodos(cards.card)}>{cards.card}</p>
+                                      </div>
+                                    )
+                                  })}
+                                </div>
+                              </div>
                             </form>
                           </Modal.Body>
                           <Modal.Footer>
@@ -300,6 +301,7 @@ class Trello extends Component {
                     );
                   }
                 })}
+                </div>
                 <AddTodo listName={card.card} username={username} getAddingTodos={this.getAddingTodos} />
               </div>
             );
